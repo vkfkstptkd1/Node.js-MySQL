@@ -30,6 +30,7 @@ var app = http.createServer(function(request, response) {
                 );
                 response.writeHead(200);
                 response.end(html);
+
             });
         } else {
             /*  fs.readdir('./data', function(error, filelist) {
@@ -80,6 +81,7 @@ var app = http.createServer(function(request, response) {
                     response.end(html);
                 })
             });
+
         }
     } else if (pathname === '/create') {
         fs.readdir('./data', function(error, filelist) {
