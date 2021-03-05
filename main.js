@@ -139,19 +139,20 @@ var app = http.createServer(function(request, response) {
                 response.end();
             })
         });
-    } else if (pathname === '/delete_process') {
+    } else if (pathname === '/delete_process') { //글 삭제
         var body = '';
         request.on('data', function(data) {
             body = body + data;
         });
         request.on('end', function() {
             var post = qs.parse(body);
-            var id = post.id;
-            var filteredId = path.parse(id).base;
-            fs.unlink(`data/${filteredId}`, function(error) {
-                response.writeHead(302, { Location: `/` });
+            db.query(`DELETE FROM topic WHERE id =?`, [post.id], function(error, result) {
+                if (error) {
+                    throw error;
+                }
+                response.writeHead(302, { Location: `/` }); //홈으로 이동해서 잘 동작했는지 확인
                 response.end();
-            })
+            });
         });
     } else {
         response.writeHead(404);
