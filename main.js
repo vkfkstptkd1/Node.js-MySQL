@@ -36,7 +36,8 @@ var app = http.createServer(function(request, response) {
                 if (error) { //topic을 못가져온다면 (에러값 생성)
                     throw error; //error를 던저벼린다.(그다음 코드 실행하지 않고 console에 오류 표시하며 즉시 멈춤)
                 }
-                db.query(`SELECT * FROM topic WHERE id=?`, [queryData.id], function(error2, topic) { //?에 들어갈 값을 배열에 인자로 넣어줌.->사용자가 입력한 정보는 무조건 불신해야하므로 ${}대신 저렇게 씀. []가 그런걸 해결해줌.
+                db.query(`SELECT * FROM topic LEFT JOIN author ON topic.author_id=author.id WHERE topic.id=?`, [queryData.id], function(error2, topic) { //?에 들어갈 값을 배열에 인자로 넣어줌.->사용자가 입력한 정보는 무조건 불신해야하므로 ${}대신 저렇게 씀. []가 그런걸 해결해줌.
+                    //글 상세보기
                     if (error2) {
                         throw error2;
                     }
@@ -45,7 +46,8 @@ var app = http.createServer(function(request, response) {
                     var description = topic[0].description;
                     var list = template.list(topics);
                     var html = template.HTML(title, list,
-                        `<h2>${title}</h2>${description}`,
+                        `<h2>${title}</h2>${description}
+                        <p>by ${topic[0].name}</p>`, //누가썼는지 본문에 구현.
                         `<a href="/create">create</a>
                          <a href="/update?id=${queryData.id}">update</a>
                          <form action="delete_process" method="post">
